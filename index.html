@@ -7,12 +7,13 @@
   Pusher.logToConsole = true;
 
     var pusher = new Pusher('0c145819fd68522617a7', {
-      cluster: 'eu'
+      cluster: 'eu',
+	  authEndpoint:'auth.php'
     });
 
-    var channel = pusher.subscribe('my-channel');
+    var channel = pusher.subscribe('private-channel');
     channel.bind('my-event', function(data) {
-      alert(JSON.stringify(data));
+       channel.trigger("client-online", data);
     });
   </script>
 </head>

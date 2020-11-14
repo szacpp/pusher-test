@@ -9,12 +9,15 @@
     // Enable pusher logging - don't include this in production
     Pusher.logToConsole = true;
 
-    var pusher = new Pusher('b30844e740b312ff5290', { authEndpoint: 'auth.php',cluster: 'ap2' });
+    var pusher = new Pusher('0c145819fd68522617a7', {
+      cluster: 'eu',
+	  authEndpoint:'auth.php'
+    });
 
     var channel = pusher.subscribe('private-message');
     channel.bind('client-online', function(data) {
       //alert(JSON.stringify(data));
-	  alert(data);
+	  alert(JSON.stringify(data));
     });
 	
 	

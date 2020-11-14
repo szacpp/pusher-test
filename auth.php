@@ -4,13 +4,13 @@ require __DIR__ . '/vendor/autoload.php';
 
   
   $options = array(
-    'cluster' => 'ap2',
+    'cluster' => 'eu',
     'useTLS' => true
   );
   $pusher = new Pusher\Pusher(
-    'b30844e740b312ff5290',
-    'ff26023b253b780392b2',
-    '1107230',
+    '0c145819fd68522617a7',
+    '0bfab6280425b25bd344',
+    '1107265',
 	
     $options
   );
