@@ -11,7 +11,7 @@
 	  authEndpoint:'auth.php'
     });
 
-    var channel = pusher.subscribe('private-channel');
+    var channel = pusher.subscribe('private-message');
     channel.bind('my-event', function(data) {
        channel.trigger("client-online", data);
     });
