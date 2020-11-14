@@ -125,4 +125,39 @@ pusher.connection.bind('connected', function() { //bind a function after we've c
 function updateOnlineCount() {
     $('#chat_widget_counter').html($('.chat_widget_member').length);
 }
+
+$('#chat_widget_form').submit(function() {
+  var chat_widget_input = $('#chat_widget_input'),
+        chat_widget_button = $('#chat_widget_button'),
+        chat_widget_loader = $('#chat_widget_loader'),
+ 
+        message = chat_widget_input.val(); //get the value from the text input
+     
+    chat_widget_button.hide(); //hide the chat button
+    chat_widget_loader.show(); //show the chat loader gif
+ 
+    ajaxCall('send_message.php', { message : message }, function(msg) { 
+        //make an ajax call to send_message.php
+        chat_widget_input.val(''); //clear the text input
+        chat_widget_loader.hide(); //hide the loader gif
+        chat_widget_button.show(); //show the chat button
+ 
+        newMessageCallback(msg.data); //display the message with the newMessageCallback function
+    });
+ 
+    return false;
+});
+
+function newMessageCallback(data) {
+    if( has_chat == false ) { //if the user doesn't have chat messages in the div yet
+        $('#chat_widget_messages').html(''); //remove the contents i.e. 'chat messages go here'
+        has_chat = true; //and set it so it won't go inside this if-statement again
+    }
+     
+    $('#chat_widget_messages').append(data.message + '<br />');
+}
+
+nettuts_channel.bind('new_message', function(data) {
+    newMessageCallback(data);
+});
 </script>
