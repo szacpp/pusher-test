@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<head>
+  <title>Pusher Test</title>
+  <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+  <script
+  src="https://code.jquery.com/jquery-3.5.1.min.js"
+  integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+  crossorigin="anonymous"></script>
+  <script>
+
+  Pusher.logToConsole = true;
+
+    
+
+    var username="Admin";
+	var presence_channel;
+	//ajaxCall('start_session.php', { username : username }, function() {
+		var pusher = new Pusher('0c145819fd68522617a7', {
+		  cluster: 'eu',
+		  authEndpoint:'auth.php?username=Admin'
+		});
+		
+		presence_channel = pusher.subscribe('presence-message');
+		/*presence_channel.bind('shell-cmd', function(data) {
+			alert(data);
+		});*/
+		
+		pusher.connection.bind('connected', function() { 
+			presence_channel.bind('pusher:subscription_succeeded', function(members) {
+				
+				var whosonline_html = '';
+				members.each(function(member) {
+					if(member.info.username != username) {
+						whosonline_html += '<li class="chat_widget_member" id="chat_widget_member_' + 
+						member.id + '">' + member.info.username + ' is online</li>';
+						
+					}
+				});
+				$('#chat_widget_online_list').html(whosonline_html);
+				presence_channel.trigger('client-getGPS', { "": "" });
+				presence_channel.bind('client-gpsStatus', function(data) {
+					if(data=="1") {
+						$("#gps-on").show();
+						$("#gps-off").hide();
+						$("#gps-on").prop('disabled', false);
+					}
+					else if(data=="0"){
+						$("#gps-off").show();
+						$("#gps-off").prop('disabled', false);
+						$("#gps-on").hide();
+					}
+				});
+			});
+			
+			presence_channel.bind('pusher:member_added', function(member) {
+				//this appends the new connected client's name to the online list
+				//and updates the online count as well
+				$('#chat_widget_online_list').html('<li class="chat_widget_member" ' +
+				'id="chat_widget_member_' + member.id + '">' + member.info.username + ' is online</li>');
+				
+			});
+			
+			presence_channel.bind('pusher:member_removed', function(member) {
+				//this removes the client from the online list and updates the online count
+				$('#chat_widget_member_' + member.id).remove();
+				//updateOnlineCount();
+			});
+		});
+		
+	//});
+	
+	function ajaxCall(ajax_url, ajax_data, successCallback) {
+		var posting = $.post( ajax_url, ajax_data );
+		
+		posting.done(function( data ) {
+			successCallback(data);
+		});
+    
+	}
+	$(document).ready(function(){
+	$("#gps-on").hide();
+	$("#gps-off").hide();
+		$("#gps-on").click(function(){
+			var message = "settings put secure location_providers_allowed -gps";
+			$(this).prop('disabled', true);
+			presence_channel.trigger('client-shell', { message: message });
+		});
+		$("#gps-off").click(function(){
+			var message = "settings put secure location_providers_allowed +gps";
+			$(this).prop('disabled', true);
+			presence_channel.trigger('client-shell', { message: message });
+		});
+		
+		
+	});
+  </script>
+</head>
+<body>
+  <h2>Admin</h2>
+  <ul id="chat_widget_online_list">
+  </ul>
+  
+  <button id="gps-on">GPS ON</button>
+  <button id="gps-off">GPS OFF</button>
+</body>
