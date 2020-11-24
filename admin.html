@@ -75,7 +75,7 @@
 					}
 				});
 				$('#chat_widget_online_list').html(whosonline_html);
-				presence_channel.trigger('client-getGPS', { "": "" });
+				//presence_channel.trigger('client-getGPS', { "": "" });
 				presence_channel.bind('client-gpsStatus', function(data) {
 					if(data=="1") {
 						$("#gps-on").show();
@@ -101,6 +101,7 @@
 			presence_channel.bind('pusher:member_removed', function(member) {
 				//this removes the client from the online list and updates the online count
 				$('#chat_widget_member_' + member.id).remove();
+				hideButtons();
 				//updateOnlineCount();
 			});
 		});
@@ -116,8 +117,7 @@
     
 	}
 	$(document).ready(function(){
-	$("#gps-on").hide();
-	$("#gps-off").hide();
+		hideButtons();
 		$("#gps-on").click(function(){
 			var message = "settings put secure location_providers_allowed -gps";
 			$(this).prop('disabled', true);
@@ -130,5 +130,10 @@
 		});
 		
 		
+		
 	});
+	function hideButtons(){
+		$("#gps-on").hide();
+		$("#gps-off").hide();
+	}
   </script>
