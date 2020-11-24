@@ -77,12 +77,13 @@
 				$('#chat_widget_online_list').html(whosonline_html);
 				//presence_channel.trigger('client-getGPS', { "": "" });
 				presence_channel.bind('client-gpsStatus', function(data) {
-					if(data=="1") {
+				
+					if(data.message==1) {
 						$("#gps-on").show();
 						$("#gps-off").hide();
 						$("#gps-on").prop('disabled', false);
 					}
-					else if(data=="0"){
+					else if(data.message==0){
 						$("#gps-off").show();
 						$("#gps-off").prop('disabled', false);
 						$("#gps-on").hide();
